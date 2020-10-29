@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>开关</title>
+    <link rel="stylesheet" href="../static/on-off.css" />
+</head>
+<body>
+    <div class="SwitchIcon">
+        <div class="toggle-button-wrapper">
+            <input type="checkbox" id="toggle-button" name="switch" onclick="SwitchClick()" checked>
+            <label for="toggle-button" class="button-label">
+                <span class="circle"></span>
+                <span class="text on">ON</span>
+                <span class="text off">OFF</span>
+            </label>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        //窗体加载
+        window.onload = function () {
+            var onoffswitch = document.getElementById("toggle-button");
+            onoffswitch.checked = true;
+        }
+        //测试开始
+        function SwitchClick() {
+            var onoffswitch = document.getElementById("toggle-button");
+            var label = document.getElementById("batteryIconContent");
+            if (onoffswitch.checked) {
+                //调用后台
+            }
+            else {
+                //调用后台
+            }
+        }
+    </script>
+</body>
+</html>

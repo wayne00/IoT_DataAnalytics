@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+{#        <script src="lib/esl.js"></script>#}
+{#        <script src="lib/config.js"></script>#}
+{#        <script src="lib/facePrint.js"></script>#}
+        <script src="../static/echarts.js"></script>
+        <script src="../static/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+    <body>
+        <div id="main" style="width: 800px;height:500px;margin: 0 auto;"></div>
+        <script type="text/javascript">
+
+        var myChart = echarts.init(document.getElementById('main'));
+
+            function getData() {
+                now = new Date(+now + oneDay);
+                value = value + Math.random() * 21 - 10;
+                return {
+                    name: now.toString(),
+                    value: [
+                        [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
+                        Math.round(value)]
+                    }
+                }
+            // 时间转字符串，转成yyyy-MM-dd HH:mm:SS格式
+            function dateToStr(datetime){
+                var dateTime = new Date(datetime);
+                var year = dateTime.getFullYear();
+                {#console.log('--year -- ' + year)#}
+                var month = dateTime.getMonth()+1;//js从0开始取
+                {#console.log('--month -- ' + month)#}
+                var date = dateTime.getDate();
+                {#console.log('--date -- ' + date)#}
+                var hour = dateTime.getHours();
+                {#console.log('--hour -- ' + hour)#}
+                var minutes = dateTime.getMinutes();
+                {#console.log('--minutes -- ' + minutes)#}
+                var second = dateTime.getSeconds();
+                {#console.log('--second -- ' + second)#}
+
+                if(month<10){
+                    month = "0" + month;
+                }
+                if(date<10){
+                    date = "0" + date;
+                }
+                if(hour <10){
+                    hour = "0" + hour;
+                }
+                if(minutes <10){
+                    minutes = "0" + minutes;
+                }
+                if(second <10){
+                    second = "0" + second ;
+                }
+
+                {#console.log(year.toString()+month.toString()+date.toString()+hour.toString()+minutes.toString()+second.toString())#}
+                {#return year+"-"+month+"-"+date+" "+hour+":"+minutes+":"+second;#}
+                return year.toString()+month.toString()+date.toString()+hour.toString()+minutes.toString()+second.toString()
+            }
+            function getInitData () {
+                $.ajax({
+                url:'/init',
+                data:JSON.stringify(dateToStr({latest_date})),
+                type:'POST',
+                async:false,
+                dataType:'json',
+                success:function(j) {
+                    data = eval(j)
+                    console.log('---init before2str ---' + data[data.length-1]['name'])
+                    latest_date = dateToStr(data[data.length-1]['name'])
+                    console.log('---init ---' + latest_date + '---- init ----')
+                },
+                error:function (msg) {
+                    console.log(msg);
+                    alert('系统init发生错误');
+                }
+            })
+            }
+            function getDynamicData () {
+                $.ajax({
+                url:'/test',
+                data:JSON.stringify({latest_date}),
+                type:'POST',
+                async:false,
+                dataType:'json',
+                success:function(j) {
+                    ej = eval(j);
+                    console.log ('---- dynamic ----' + data.length)
+
+                    if(ej.length>0){
+                        latest_date = dateToStr(ej[ej.length-1]['name'])
+                        for (var i = 0; i < ej.length; i++) {
+                            data.push(ej[i])
+                            console.log(ej[i]["name"])
+                            console.log("=========key point============")
+                            console.log(ej[i]["value"][0]+ej[i]["value"][1])
+                            console.log("=========key point============")
+                            data.shift();
+                        }
+                    }
+                },
+                error:function (msg) {
+                    console.log(msg);
+                    alert('系统dynamic发生错误');
+                }
+            })
+            }
+
+        var data = [];
+        var latest_date=dateToStr('9999/1/1 00:00:00');
+        console.log(latest_date)
+        getInitData()
+        option = {
+            title: {
+                text: '试车线某PLC 点位数据'
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    params = params[0];
+                    var date = new Date(params.name);
+                    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+                },
+                axisPointer: {
+                    animation: false
+                }
+            },
+            xAxis: {
+                type: 'time',
+                splitLine: {
+                    show: false
+                }
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                splitLine: {
+                    show: false
+                }
+            },
+            series: [{
+                name: '模拟数据',
+                type: 'line',
+                showSymbol: false,
+                hoverAnimation: false,
+                data: data
+            }]
+        };
+        setInterval(function () {
+            getDynamicData()
+
+            myChart.setOption({
+                series: [{
+                    data: data
+                }]
+            });
+        }, 1000);
+        myChart.setOption(option)
+        </script>
+    </body>
+</html>

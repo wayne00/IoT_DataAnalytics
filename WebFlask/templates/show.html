@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <title>IoT Data Show</title>
+     <!-- 引入 echarts.js -->
+     <script src="../static/echarts.js"></script>
+     <!-- 引入jquery.js -->
+     <script src="../static/jquery.min.js"></script>
+ </head>
+ <body>
+  <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+  <div id="main" style="width: 800px;height:500px;margin: 0 auto;"></div>
+  <script type="text/javascript">
+
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var app = {
+        xday:[],
+        yvalue:[]
+    };
+
+    // 发送ajax请求，从后台获取json数据
+    $(document).ready(function () {
+        getData();
+        console.log(app.xday);
+        console.log(app.yvalue)
+    });
+        sleep(5000)
+    function getData() {
+         $.ajax({
+            url:'/test',
+            data:{},
+            type:'POST',
+            async:false,
+            dataType:'json',
+            success:function(data) {
+                app.xday = data.xdays;
+                app.yvalue = data.yvalues;
+                myChart.setOption({
+                    title: {
+                        text: 'TEST'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data:['test-metric']
+                    },
+                    xAxis: {
+                        data: app.xday
+                    },
+                    yAxis: {},
+                    series: [{
+                        name: 'test-metric',
+                        type: 'line',
+                        data: app.yvalue
+                    }]
+                })
+            },
+            error:function (msg) {
+                console.log(msg);
+                alert('系统发生错误');
+                getData()
+            }
+        })
+    };
+    function sleep(delay) {
+        var start = (new Date()).getTime();
+        while ((new Date()).getTime() - start < delay) {
+            continue;
+        }
+    };
+</script>
+ </body>
+</html>
