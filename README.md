@@ -44,4 +44,5 @@
 SparkStreaming 实时数据监控分析
 	树莓派 -> AWS IoT Core -> AWS IoT Rule -> Kinesis DataStream -> EMR SparkStreaming(contains Isolation Forest Model) -> AWS SNS
 
-![image](./images/gg-alarm.jpg)
+![image](./images/sparkstreaming.jpg)
+
