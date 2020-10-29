@@ -14,12 +14,12 @@
 
 总体架构：
 
-![image]()
+![image](https://github.com/wayne00/IoT_DataAnalytics/tree/master/images/architecture.png)
 
 
 云端/APP端远程控制树莓派二极管灯开关
-![image]()
 
+![image](https://github.com/wayne00/IoT_DataAnalytics/tree/master/images/reverse-control.jpg)
 
 
 实时告警实现：
@@ -39,4 +39,10 @@
 		1. Lambda 接收Greengrass消息，指标运算
 		2. 调用SNS服务
 
-![image]()
+![image](https://github.com/wayne00/IoT_DataAnalytics/tree/master/images/gg-alarm.jpg)
+
+
+SparkStreaming 实时数据监控分析
+	树莓派 -> AWS IoT Core -> AWS IoT Rule -> Kinesis DataStream -> EMR SparkStreaming(contains Isolation Forest Model) -> AWS SNS
+
+![image](https://github.com/wayne00/IoT_DataAnalytics/tree/master/images/gg-alarm.jpg)
